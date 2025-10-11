@@ -2,13 +2,22 @@
 
 Real-time facial expression tracking with beautiful overlays.
 
+## Requirements
+
+- Python 3.9, 3.10, or 3.11 (MediaPipe does not support 3.13 yet)
+
 ## Installation
 
 ```bash
+# Create virtual environment with compatible Python version
+python3.11 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-**Note for Mac M1/M2:** The requirements file automatically installs `mediapipe-silicon` for better ARM compatibility.
+**Note:** If you're on Mac M1/M2 and encounter issues, try `pip install mediapipe-silicon` instead of mediapipe.
 
 ## Usage
 
