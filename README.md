@@ -21,8 +21,17 @@ pip install -r requirements.txt
 
 ## Usage
 
+### Interactive Mode (Default)
 ```bash
 python face_tracker.py
+```
+You'll be prompted to select from available expression folders.
+
+### Command-Line Mode
+```bash
+# Use a specific folder directly
+python face_tracker.py nailong
+python face_tracker.py sillynubcat
 ```
 
 **Controls:**
@@ -32,12 +41,14 @@ python face_tracker.py
 ## Features
 
 - Real-time face mesh with 468 facial landmarks
+- **Modular folder-based configuration system**
+  - Each folder has its own expression mappings and detection settings
+  - Easy to add new expression sets
+  - Customizable detection sensitivity per folder
 - **Expression-based image mapping** - images appear based on your expressions:
   - Neutral: Black square
-  - **Angry** (frown eyebrows): `1.jpeg`
-  - **Tongue Out**: `2.jpg`
-  - **Shocked** (wide open mouth + eyes): `3.jpg`
-  - **Smiling** (corners up, closed mouth): `4.png`
+  - Expression detection includes: Angry, Tongue Out, Shocked, Smiling
+  - Auto-detects and loads available expressions from selected folder
 - Three visualization modes:
   - **FULL MESH**: Complete 3D face mesh with all landmarks
   - **CONTOURS**: Clean face and eye contours
@@ -45,3 +56,50 @@ python face_tracker.py
 - Transparent white overlay (25% opacity)
 - Mirrored view for natural interaction
 - Expression images shown in separate window at consistent size
+
+## Detection Modes
+
+### Face Detection (nailong)
+- Detects facial expressions using MediaPipe Face Mesh
+- Maps expressions like: Angry, Tongue Out, Shocked, Smiling
+
+### Hand Gesture Detection (sillynubcat)
+- Detects hand gestures using MediaPipe Hands
+- Supported gestures:
+  - **4 Fingers**: All fingers up (no thumb) → `1.jpeg`
+  - **Index Finger**: Only index finger pointing up → `2.png`
+  - **Middle Finger**: Only middle finger up → `3.jpeg`
+
+### Both Modes
+- Set `"detection_mode": "both"` to use face and hand detection together
+
+## Adding New Expression Folders
+
+1. Create a new folder with your expression images (e.g., `myexpressions/`)
+2. Add numbered images: `1.jpeg`, `2.jpeg`, `3.png`, `4.jpeg`, etc.
+3. Add configuration in `face_tracker.py`:
+
+```python
+FOLDER_CONFIGS = {
+    # ... existing configs ...
+    "myexpressions": {
+        "directory": "myexpressions",
+        "description": "My custom expressions",
+        "expressions": {
+            "1.jpeg": {"name": "Happy", "fill_mode": "fit"},
+            "2.jpeg": {"name": "Sad", "fill_mode": "crop"},
+            # Add more...
+        },
+        "detection_settings": {
+            "tongue_sensitivity": 0.012,
+            "eyebrow_frown_sensitivity": 0.003,
+            "eyebrow_distance_threshold": 0.045,
+            "smile_sensitivity": 0.008,
+            "mouth_aspect_ratio_max": 0.2
+        },
+        "detection_mode": "face"  # Options: "face", "hands", or "both"
+    }
+}
+```
+
+4. Run with: `python face_tracker.py myexpressions`
